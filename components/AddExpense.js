@@ -164,7 +164,6 @@ export default function AddExpense() {
       const today = new Date().toISOString().split('T')[0];
       const monthStart = today.substring(0, 7);
       
-      // Create new expense data
       const newExpenseRef = push(ref(database, `users/${user.uid}/expenses`));
       const expenseData = {
         amount,
@@ -173,7 +172,6 @@ export default function AddExpense() {
         timestamp: serverTimestamp(),
       };
 
-      // Update budget data
       const updatedBudget = {
         ...currentBudget,
         spent: (currentBudget.spent || 0) + amount,
@@ -183,12 +181,10 @@ export default function AddExpense() {
         }
       };
 
-      // Create update object following the security rules structure
       const updates = {};
       updates[`users/${user.uid}/budget/${monthStart}`] = updatedBudget;
       updates[`users/${user.uid}/expenses/${newExpenseRef.key}`] = expenseData;
 
-      // Perform the update
       await update(ref(database), updates);
       
       showAlert('success', 'Expense saved successfully!');

@@ -74,7 +74,6 @@ const UIAlert = ({ type, message, visible, onDismiss }) => {
   );
 };
 
-// Move EXPENSE_CATEGORIES to state since it will be dynamic now
 const DEFAULT_CATEGORIES = {
   groceries: { name: 'Groceries', icon: '🛒', color: '#4A6E52' },
   rent: { name: 'Rent', icon: '🏠', color: '#C8B08C' },
@@ -128,7 +127,6 @@ export default function Home() {
       if (data) {
         setExpenseCategories(data);
       } else {
-        // Initialize with default categories if none exist
         set(categoriesRef, DEFAULT_CATEGORIES);
         setExpenseCategories(DEFAULT_CATEGORIES);
       }
@@ -158,15 +156,14 @@ export default function Home() {
     const categoryKey = newCategoryName.toLowerCase().replace(/\s+/g, '_');
     const newCategory = {
       name: newCategoryName,
-      icon: newCategoryIcon || '📦', // Default icon if none provided
-      color: '#' + Math.floor(Math.random()*16777215).toString(16) // Random color
+      icon: newCategoryIcon || '📦',
+      color: '#' + Math.floor(Math.random()*16777215).toString(16)
     };
 
     try {
       const updates = {};
       updates[`users/${user.uid}/categories/${categoryKey}`] = newCategory;
       
-      // Also update the current month's budget to include the new category
       const today = new Date().toISOString().split('T')[0];
       const monthStart = today.substring(0, 7);
       updates[`users/${user.uid}/budget/${monthStart}/categories/${categoryKey}`] = 0;
@@ -194,15 +191,12 @@ export default function Home() {
       const today = new Date().toISOString().split('T')[0];
       const monthStart = today.substring(0, 7);
       
-      // Create updates object
       const updates = {};
       updates[`users/${user.uid}/categories/${categoryKey}`] = null;
       updates[`users/${user.uid}/budget/${monthStart}/categories/${categoryKey}`] = null;
 
-      // Perform the update
       await update(ref(database), updates);
       
-      // Update local state to reflect the deletion
       const updatedCategories = { ...expenseCategories };
       delete updatedCategories[categoryKey];
       setExpenseCategories(updatedCategories);

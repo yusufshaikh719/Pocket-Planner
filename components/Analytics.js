@@ -19,7 +19,6 @@ export default function Analytics() {
   useEffect(() => {
     if (!user?.uid) return;
 
-    // Fetch categories
     const categoriesRef = ref(database, `users/${user.uid}/categories`);
     const unsubscribeCategories = onValue(categoriesRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -27,7 +26,6 @@ export default function Analytics() {
       }
     });
 
-    // Fetch expenses
     const expensesRef = ref(database, `users/${user.uid}/expenses`);
     const unsubscribeExpenses = onValue(expensesRef, (snapshot) => {
       if (snapshot.exists()) {
